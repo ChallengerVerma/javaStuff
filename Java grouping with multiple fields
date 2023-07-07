@@ -1,0 +1,110 @@
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+public class EmployeeGrouping {
+
+    public static void main(String[] args) {
+        List<Employee> employees = Arrays.asList(
+                new Employee("John", "Developer", 25, "Male"),
+                new Employee("Sarah", "Manager", 30, "Female"),
+                new Employee("David", "Designer", 28, "Male"),
+                new Employee("Emily", "Developer", 27, "Female"),
+                new Employee("Michael", "Manager", 35, "Male"),
+                new Employee("John", "Manager", 40, "Male"),
+                new Employee("Sarah", "Designer", 32, "Female")
+        );
+
+        Map<Key, List<Employee>> groupings = generateGroupings(employees);
+        System.out.println("Groupings by Name, Designation, and Gender:");
+        printGroupings(groupings);
+    }
+
+    public static Map<Key, List<Employee>> generateGroupings(List<Employee> employees) {
+        return employees.stream()
+                .collect(Collectors.groupingBy(employee -> new Key(employee.getName(), employee.getDesignation(), employee.getGender())));
+    }
+
+    public static void printGroupings(Map<Key, List<Employee>> groupings) {
+        for (Map.Entry<Key, List<Employee>> entry : groupings.entrySet()) {
+            System.out.println("Key: " + entry.getKey());
+            System.out.println("Employees: " + entry.getValue());
+            System.out.println();
+        }
+    }
+
+    static class Key {
+        private String name;
+        private String designation;
+        private String gender;
+
+        public Key(String name, String designation, String gender) {
+            this.name = name;
+            this.designation = designation;
+            this.gender = gender;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public String getDesignation() {
+            return designation;
+        }
+
+        public String getGender() {
+            return gender;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            Key key = (Key) o;
+            return name.equals(key.name) &&
+                    designation.equals(key.designation) &&
+                    gender.equals(key.gender);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(name, designation, gender);
+        }
+
+        @Override
+        public String toString() {
+            return name + "-" + designation + "-" + gender;
+        }
+    }
+}
+
+class Employee {
+    private String name;
+    private String designation;
+    private int age;
+    private String gender;
+
+    public Employee(String name, String designation, int age, String gender) {
+        this.name = name;
+        this.designation = designation;
+        this.age = age;
+        this.gender = gender;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getDesignation() {
+        return designation;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+}
