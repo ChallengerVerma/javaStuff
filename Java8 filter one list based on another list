@@ -1,0 +1,57 @@
+import java.math.BigDecimal;
+import java.util.*;
+import java.util.stream.Collectors;
+
+public class Main {
+    public static void main(String[] args) {
+        // Your existing data
+        Map<ClassKey, List<Product>> productMap = new HashMap<>();
+        List<Purchase> purchaseList = new ArrayList<>();
+
+        // Assume you have already populated the productMap and purchaseList with data
+
+        // Step 1: Create a Map<ClassKey, List<Purchase>> by filtering and grouping the Purchase list based on the Product IDs present in the productMap
+        Map<ClassKey, List<Purchase>> purchasesByClassKey = purchaseList.stream()
+                .collect(Collectors.groupingBy(purchase -> {
+                    for (Map.Entry<ClassKey, List<Product>> entry : productMap.entrySet()) {
+                        if (entry.getValue().stream().anyMatch(product -> product.getProductId() == purchase.getProductId())) {
+                            return entry.getKey();
+                        }
+                    }
+                    return null;
+                }, Collectors.toList()));
+
+        // Now purchasesByClassKey contains a mapping of each ClassKey to a list of Purchases,
+        // where each Purchase has a Product ID present in the productMap
+    }
+
+    // Assume you have classes Product, Purchase, and ClassKey defined with appropriate getters and setters
+    static class Product {
+        private int productId;
+        private BigDecimal price;
+
+        public int getProductId() {
+            return productId;
+        }
+
+        public BigDecimal getPrice() {
+            return price;
+        }
+
+        // Other methods and fields for the Product class
+    }
+
+    static class Purchase {
+        private int productId;
+
+        public int getProductId() {
+            return productId;
+        }
+
+        // Other methods and fields for the Purchase class
+    }
+
+    static class ClassKey {
+        // ClassKey implementation details
+    }
+}
