@@ -26,19 +26,12 @@ public class Main {
     // Step 3: Sort the List<Purchase> for each ClassKey based on the BigDecimal price
         purchasesByClassKey.values().forEach(purchaseListForClass -> purchaseListForClass.sort(Comparator.comparing(Purchase::getPrice)));
 
-       // Step 4: Create a Map<ClassKey, String> containing the product ID of the median index for each list of Purchase
+      // Step 4: Create a Map<ClassKey, String> containing the product ID of the median index for each list of Purchase
         Map<ClassKey, String> medianIndexMap = purchasesByClassKey.entrySet().stream()
                 .collect(Collectors.toMap(
                         Map.Entry::getKey,
-                        entry -> {
-                            List<Purchase> purchases = entry.getValue();
-                            int medianIndex = calculateMedianIndex(purchases.size());
-                            return String.valueOf(purchases.get(medianIndex).getProductId());
-                        }
+                        entry -> getProductIdOfMedian(entry.getValue())
                 ));
-
-        // Now medianIndexMap contains the product ID of the median index for each list of Purchase for each ClassKey
-    }
 
         // Now medianIndexMap contains the product ID of the median index for each list of Purchase for each ClassKey
     }
@@ -46,6 +39,12 @@ public class Main {
     // Helper method to calculate the median index
     private static int calculateMedianIndex(int size) {
         return (size % 2 == 0) ? size / 2 - 1 : size / 2;
+    }
+
+    // Helper method to get the product ID of the median index
+    private static String getProductIdOfMedian(List<Purchase> purchases) {
+        int medianIndex = calculateMedianIndex(purchases.size());
+        return String.valueOf(purchases.get(medianIndex).getProductId());
     }
 
     // Assume you have classes Product, Purchase, and ClassKey defined with appropriate getters and setters
