@@ -46,6 +46,14 @@ public class Main {
         int medianIndex = calculateMedianIndex(purchases.size());
         return String.valueOf(purchases.get(medianIndex).getProductId());
     }
+ // Helper method to find the ClassKey for a given Purchase based on the productMap
+    private static ClassKey findClassKeyForPurchase(Purchase purchase, Map<ClassKey, List<Product>> productMap, ClassKey defaultClassKey) {
+        return productMap.entrySet().parallelStream()
+                .filter(entry -> entry.getValue().stream().anyMatch(product -> product.getProductId() == purchase.getProductId()))
+                .map(Map.Entry::getKey)
+                .findFirst()
+                .orElse(defaultClassKey);
+    }
 
     // Assume you have classes Product, Purchase, and ClassKey defined with appropriate getters and setters
     static class Product {
