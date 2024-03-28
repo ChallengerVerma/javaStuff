@@ -1,0 +1,54 @@
+import java.math.BigDecimal;
+import java.util.Objects;
+
+public class MyClass {
+    private String stringField1;
+    private String stringField2;
+    private long longField1;
+    private long longField2;
+    private int intField;
+    private BigDecimal bigDecimalField1;
+    private BigDecimal bigDecimalField2;
+
+    // Constructor, getters, setters, etc.
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        MyClass myClass = (MyClass) o;
+        return longField1 == myClass.longField1 &&
+                longField2 == myClass.longField2 &&
+                intField == myClass.intField &&
+                Objects.equals(stringField1, myClass.stringField1) &&
+                Objects.equals(stringField2, myClass.stringField2) &&
+                compareBigDecimal(bigDecimalField1, myClass.bigDecimalField1) == 0 &&
+                compareBigDecimal(bigDecimalField2, myClass.bigDecimalField2) == 0;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(stringField1, stringField2, longField1, longField2, intField,
+                            roundBigDecimal(bigDecimalField1), roundBigDecimal(bigDecimalField2));
+    }
+
+    private int compareBigDecimal(BigDecimal bd1, BigDecimal bd2) {
+        if (bd1 == null && bd2 == null) {
+            return 0;
+        } else if (bd1 == null) {
+            return -1;
+        } else if (bd2 == null) {
+            return 1;
+        }
+        // Compare with precision up to 10 decimal places
+        return bd1.setScale(10, BigDecimal.ROUND_HALF_UP)
+                  .compareTo(bd2.setScale(10, BigDecimal.ROUND_HALF_UP));
+    }
+
+    private BigDecimal roundBigDecimal(BigDecimal bd) {
+        if (bd == null) {
+            return null;
+        }
+        return bd.setScale(10, BigDecimal.ROUND_HALF_UP);
+    }
+}
